@@ -21,14 +21,15 @@ namespace UnitTestProject
         [TestMethod]
         public void TestTypes()
         {
+            string answer = "APhoneIInternetComputerPhoneProgramSecondNameAttributeSmartPhone";
             var computerType = typeof(Computer);
             var types = computerType.Assembly.GetTypes();
-            string typeInfo = Environment.NewLine;
+            string typeInfo = string.Empty;
             foreach (var type in types)
             {
-                typeInfo += "*** " + type.Name + Environment.NewLine;
+                typeInfo += type.Name;
             }
-            Assert.Fail(typeInfo);
+            Assert.AreEqual(answer,typeInfo);
         }
 
         /// <summary>
@@ -37,38 +38,37 @@ namespace UnitTestProject
         [TestMethod]
         public void TestCollection()
         {
+            string answer = "Abstract collection:ComputerInterface collection:SmartPhoneComputer";
             var aCollection = new List<object>();
 
-            string aInfo = Environment.NewLine + "Abstract collection:" + Environment.NewLine;
+            string aInfo ="Abstract collection:";
 
             var iCollection = new List<object>();
 
-            string iInfo = Environment.NewLine + "Interface collection:" + Environment.NewLine;
+            string iInfo = "Interface collection:";
 
             var collection = new List<object> { new Phone(), new SmartPhone(), new Computer() };
 
             foreach (var item in collection)
             {
                 var baseType = item.GetType().BaseType;
-                if (baseType != null && baseType == typeof(APhone))
+                if (baseType != null && typeof(APhone).IsSubclassOf(baseType))
                 {
                     aCollection.Add(item);
-                    aInfo += item.GetType().Name + Environment.NewLine;
+                    aInfo += item.GetType().Name;
                 }
                 foreach (var value in item.GetType().GetInterfaces())
                 {
                     if (value.Name == typeof(IInternet).Name)
                     {
                         iCollection.Add(item);
-                        iInfo += item.GetType().Name + Environment.NewLine;
+                        iInfo += item.GetType().Name;
                         break;
                     }
                 }
             }
             string allInfo = aInfo + iInfo;
-            Assert.Fail(allInfo);
-            //Assert.IsTrue(true,allInfo);
-            //Assert.Inconclusive(allInfo);
+            Assert.AreEqual(answer,allInfo);
         }
 
         /// <summary>
@@ -77,8 +77,10 @@ namespace UnitTestProject
         [TestMethod]
         public void TestAttributes()
         {
+            string answer =
+                "Type: Stelmashok.OSSP.Lab2.Computerpublic properties:ValueType: Stelmashok.OSSP.Lab2.Phonepublic properties:NumberType: Stelmashok.OSSP.Lab2.SmartPhonepublic properties:ValueNumber";
             string[] AttributeNames = new[] {"HomePhone", "Device", "Mobile"};
-            string allInfo = Environment.NewLine;
+            string allInfo = string.Empty;
 
             var types = typeof(Phone).Assembly.GetTypes();
             foreach (var type in types)
@@ -90,16 +92,16 @@ namespace UnitTestProject
                     if (secondNameAttribute != null && secondNameAttribute.Name == attributeName)
                     {
                         var obj = Activator.CreateInstance(type);
-                        allInfo += "Type: " + obj.GetType().ToString() + Environment.NewLine
-                            + "public properties:" + Environment.NewLine;
+                        allInfo += "Type: " + obj.GetType().ToString() 
+                                   + "public properties:";
                         foreach (var propertie in obj.GetType().GetProperties())
                         {
-                            allInfo += propertie.Name + Environment.NewLine;
+                            allInfo += propertie.Name;
                         }
                     }
                 }
             }
-            Assert.Fail(allInfo);
+            Assert.AreEqual(answer,allInfo);
         }
     }
 }
